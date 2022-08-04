@@ -53,7 +53,7 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
                 if (delayedQueue == null) {
                     RBlockingQueue<DelayMessage> initialBlockingQueue = redissonClient.getBlockingQueue(name);
                     delayedQueue = redissonClient.getDelayedQueue(initialBlockingQueue);
-                    delayedQueueRegistry.put(name, delayedQueue);
+                    delayedQueueRegistry.putIfAbsent(name, delayedQueue);
                 }
 
                 return delayedQueue;
