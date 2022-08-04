@@ -1,9 +1,12 @@
 package org.solution.delaymessage;
 
-import java.util.concurrent.TimeUnit;
+import org.solution.delaymessage.common.DelayMessage;
 
 public interface DelayMessageProducer {
 
-    <T> void send(T message, long delay, TimeUnit unit);
+    void send(DelayMessage delayMessage);
+
+    void sendAsync(DelayMessage delayMessage);
+
 
 }
