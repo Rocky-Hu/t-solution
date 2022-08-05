@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>t-delay-delayMessage</module>
+        <module>t-delay-message</module>
     </modules>
 
     <parent>
@@ -36,6 +36,8 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
 
     </dependencies>
 

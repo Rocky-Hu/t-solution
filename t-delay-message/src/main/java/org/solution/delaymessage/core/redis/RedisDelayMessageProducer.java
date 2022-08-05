@@ -11,19 +11,23 @@ import org.solution.delaymessage.DelayMessageProducer;
 import org.solution.delaymessage.common.DelayMessage;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RedisDelayMessageProducer implements DelayMessageProducer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisDelayMessageProducer.class);
 
+    private final AtomicInteger regCount = new AtomicInteger();
+
     private final ConcurrentHashMap<String, Object> parallelLockMap = new ConcurrentHashMap<>();
 
     private RedissonClient redissonClient;
     private ConcurrentHashMap<String, RDelayedQueue> delayedQueueRegistry = new ConcurrentHashMap<>();
-    private Codec codec = new MarshallingCodec();
+    private Codec codec;
 
     public RedisDelayMessageProducer(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
+        this.codec = new MarshallingCodec();
     }
 
     public RedisDelayMessageProducer(RedissonClient redissonClient, Codec codec) {
@@ -33,13 +37,13 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
 
     @Override
     public void send(DelayMessage delayMessage) {
-        LOGGER.debug("{}", delayMessage);
+        LOGGER.debug("send message: {}", delayMessage);
         delayedQueue(delayMessage.getTopic()).offer(delayMessage, delayMessage.getDelay(), delayMessage.getTimeUnit());
     }
 
     @Override
     public void sendAsync(DelayMessage delayMessage) {
-        LOGGER.debug("{}", delayMessage);
+        LOGGER.debug("sendAsync message: {}", delayMessage);
         delayedQueue(delayMessage.getTopic()).offerAsync(delayMessage, delayMessage.getDelay(), delayMessage.getTimeUnit());
     }
 
@@ -51,9 +55,10 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
             synchronized (getDelayedQueueInitialLock(name)) {
                 delayedQueue = delayedQueueRegistry.get(name);
                 if (delayedQueue == null) {
-                    RBlockingQueue<DelayMessage> initialBlockingQueue = redissonClient.getBlockingQueue(name);
+                    RBlockingQueue<DelayMessage> initialBlockingQueue = redissonClient.getBlockingQueue(name, codec);
                     delayedQueue = redissonClient.getDelayedQueue(initialBlockingQueue);
                     delayedQueueRegistry.putIfAbsent(name, delayedQueue);
+                    LOGGER.info("Register delayed queue, name: {}, count: {}", name, regCount.incrementAndGet());
                 }
 
                 return delayedQueue;
