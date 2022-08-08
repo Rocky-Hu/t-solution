@@ -10,7 +10,6 @@ import org.solution.delaymessage.common.DelayMessage;
 import org.solution.delaymessage.core.redis.RedisDelayMessageProducer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +49,7 @@ public class RedisDelayMessageProducerTest {
     public void test_sendAsync() {
         RedisDelayMessageProducer redisDelayMessageProducer = new RedisDelayMessageProducer(redissonClient);
         String message = "hello";
-        DelayMessage delayMessage = new DelayMessage("myTopic", 20,
+        DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
         redisDelayMessageProducer.sendAsync(delayMessage);
     }
@@ -66,7 +65,7 @@ public class RedisDelayMessageProducerTest {
                 @Override
                 public void run() {
                     countDownLatch.countDown();
-                    DelayMessage delayMessage = new DelayMessage("myTopic", 3600,
+                    DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                             TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
                     redisDelayMessageProducer.sendAsync(delayMessage);
                 }
