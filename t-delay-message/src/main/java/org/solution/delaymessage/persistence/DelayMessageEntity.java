@@ -1,5 +1,7 @@
 package org.solution.delaymessage.persistence;
 
+import org.solution.delaymessage.common.DelayMessageStatus;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,7 +10,7 @@ public class DelayMessageEntity implements Serializable {
     private String id;
     private String topic;
     private String content;
-    private Integer status;
+    private DelayMessageStatus status;
     private Long expireTime;
     private Date createTime;
     private Date modifyTime;
@@ -37,11 +39,11 @@ public class DelayMessageEntity implements Serializable {
         this.content = content;
     }
 
-    public Integer getStatus() {
+    public DelayMessageStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(DelayMessageStatus status) {
         this.status = status;
     }
 
