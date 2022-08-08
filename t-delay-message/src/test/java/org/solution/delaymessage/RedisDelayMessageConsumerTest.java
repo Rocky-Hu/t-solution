@@ -34,7 +34,13 @@ public class RedisDelayMessageConsumerTest {
 
     @Test
     public void test_orderly_consume() {
-
+        RedisDelayMessageConsumer redisDelayMessageConsumer = new RedisDelayMessageConsumer(redissonClient, 1);
+        redisDelayMessageConsumer.subscribe("myTopic");
+        redisDelayMessageConsumer.registerMessageListener(new DelayMessageListener() {
+            @Override
+            public void consumeMessage(DelayMessage delayMessage) {
+            }
+        });
     }
 
     @Test

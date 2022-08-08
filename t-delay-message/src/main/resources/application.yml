@@ -1,0 +1,8 @@
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/soms
+    username: postgres
+    password: 14981498
+    driver-class-name: org.postgresql.Driver
+

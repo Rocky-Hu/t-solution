@@ -67,7 +67,6 @@ public class RedisDelayMessageConsumer implements DelayMessageConsumer {
         for (int i = 0; i < consumerSize; i++) {
             blockingQueue.subscribeOnElements((t) ->{
                 LOGGER.debug("Consume message, Thread={}, Message={}", Thread.currentThread().getName(), t);
-
                 delayMessageListener.consumeMessage(t);
             });
         }

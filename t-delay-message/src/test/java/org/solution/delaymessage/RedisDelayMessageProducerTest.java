@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.solution.delaymessage.common.DelayMessage;
 import org.solution.delaymessage.core.redis.RedisDelayMessageProducer;
@@ -48,6 +49,15 @@ public class RedisDelayMessageProducerTest {
     @Test
     public void test_sendAsync() {
         RedisDelayMessageProducer redisDelayMessageProducer = new RedisDelayMessageProducer(redissonClient);
+        String message = "hello";
+        DelayMessage delayMessage = new DelayMessage("myTopic", 5,
+                TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
+        redisDelayMessageProducer.sendAsync(delayMessage);
+    }
+
+    @Test
+    public void test_sendAsync_with_codec() {
+        RedisDelayMessageProducer redisDelayMessageProducer = new RedisDelayMessageProducer(redissonClient, new JsonJacksonCodec());
         String message = "hello";
         DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));

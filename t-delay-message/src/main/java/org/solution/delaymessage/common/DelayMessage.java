@@ -1,6 +1,6 @@
 package org.solution.delaymessage.common;
 
-import org.solution.delaymessage.util.UUIDGenerator;
+import org.solution.delaymessage.util.CommonUtils;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -17,14 +17,21 @@ public class DelayMessage implements Serializable {
     private TimeUnit timeUnit;
     private long bornTimestamp;
     private Map<String, String> properties;
+
+    /**
+     * String UTF-8 encoded byte array
+     */
     private byte[] body;
+
+    public DelayMessage() {
+    }
 
     public DelayMessage(String topic, long delay, TimeUnit timeUnit, byte[] body) {
         Assert.hasLength(topic, "topic can't be empty");
         Assert.notNull(delay, "delay can't be null");
         Assert.notNull(timeUnit, "timeUnit can't be null");
         Assert.notNull(body, "body can't be null");
-        this.id = UUIDGenerator.generateUUID();
+        this.id = CommonUtils.generateUUID();
         this.topic = topic;
         this.delay = delay;
         this.timeUnit = timeUnit;
