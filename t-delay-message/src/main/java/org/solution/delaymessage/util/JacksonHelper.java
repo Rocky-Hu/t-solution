@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.redisson.codec.JsonJacksonCodec;
+import org.solution.delaymessage.exception.DelayMessageException;
 
 public class JacksonHelper {
 
@@ -29,19 +30,19 @@ public class JacksonHelper {
         objectMapper.addMixIn(Throwable.class, JsonJacksonCodec.ThrowableMixIn.class);
     }
 
-    public String writeValueAsString(Object obj) {
+    public static String writeValueAsString(Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new DelayMessageException(e);
         }
     }
 
-    public <T> T readValue(String str, Class<T> clazz) {
+    public static <T> T readValue(String str, Class<T> clazz) {
         try {
             return objectMapper.readValue(str, clazz);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new DelayMessageException(e);
         }
     }
 

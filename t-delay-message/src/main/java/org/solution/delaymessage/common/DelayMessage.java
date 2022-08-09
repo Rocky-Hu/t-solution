@@ -31,6 +31,11 @@ public class DelayMessage implements Serializable {
         Assert.notNull(delay, "delay can't be null");
         Assert.notNull(timeUnit, "timeUnit can't be null");
         Assert.notNull(body, "body can't be null");
+
+        if (timeUnit == TimeUnit.MICROSECONDS || timeUnit == TimeUnit.NANOSECONDS ) {
+            throw new IllegalArgumentException("Unsupported time unit!");
+        }
+
         this.id = CommonUtils.generateUUID();
         this.topic = topic;
         this.delay = delay;
@@ -45,6 +50,11 @@ public class DelayMessage implements Serializable {
         Assert.notNull(delay, "delay can't be null");
         Assert.notNull(timeUnit, "timeUnit can't be null");
         Assert.notNull(body, "body can't be null");
+
+        if (timeUnit == TimeUnit.MICROSECONDS || timeUnit == TimeUnit.NANOSECONDS ) {
+            throw new IllegalArgumentException("Unsupported time unit!");
+        }
+
         this.id = id;
         this.topic = topic;
         this.delay = delay;
