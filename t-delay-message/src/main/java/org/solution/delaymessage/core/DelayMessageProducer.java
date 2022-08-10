@@ -1,4 +1,4 @@
-package org.solution.delaymessage;
+package org.solution.delaymessage.core;
 
 import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.common.SendResult;

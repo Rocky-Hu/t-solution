@@ -1,4 +1,4 @@
-package org.solution.delaymessage.impl;
+package org.solution.delaymessage.core.impl;
 
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
@@ -7,7 +7,7 @@ import org.redisson.client.codec.Codec;
 import org.redisson.codec.MarshallingCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solution.delaymessage.DelayMessageProducer;
+import org.solution.delaymessage.core.DelayMessageProducer;
 import org.solution.delaymessage.common.SendStatus;
 import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.common.SendResult;
@@ -15,6 +15,7 @@ import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.solution.delaymessage.exception.DelayMessagePersistentException;
 import org.solution.delaymessage.persistence.DelayMessageEntity;
 import org.solution.delaymessage.persistence.DelayMessageService;
+import org.solution.delaymessage.util.MsgIdGenerator;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,6 +32,7 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
     private DelayMessageService delayMessageService;
     private ConcurrentHashMap<String, RDelayedQueue<DelayMessageExt>> delayedQueueRegistry = new ConcurrentHashMap<>();
     private Codec codec;
+
 
     public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageService delayMessageService) {
         this(redissonClient, delayMessageService, new MarshallingCodec());
@@ -97,7 +99,7 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
         delayMessageExt.setTimeUnit(delayMessage.getTimeUnit());
         delayMessageExt.setProperties(delayMessage.getProperties());
         delayMessageExt.setBody(delayMessage.getBody());
-        delayMessageExt.setId();
+        delayMessageExt.setId(MsgIdGenerator.generate());
         delayMessageExt.setBornTimestamp(System.currentTimeMillis());
         return delayMessageExt;
     }

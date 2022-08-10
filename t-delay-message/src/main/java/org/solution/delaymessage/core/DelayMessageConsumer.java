@@ -1,4 +1,4 @@
-package org.solution.delaymessage;
+package org.solution.delaymessage.core;
 
 public interface DelayMessageConsumer {
 

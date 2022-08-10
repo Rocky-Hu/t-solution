@@ -2,9 +2,9 @@ package org.solution.delaymessage.util;
 
 import java.util.UUID;
 
-public class CommonUtils {
+public class MsgIdGenerator {
 
-    public static String generateUUID() {
+    public static String generate() {
         return UUID.randomUUID().toString();
     }
 
