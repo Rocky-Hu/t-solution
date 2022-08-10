@@ -7,8 +7,8 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
-import org.solution.delaymessage.common.DelayMessage;
-import org.solution.delaymessage.core.redis.RedisDelayMessageProducer;
+import org.solution.delaymessage.common.message.DelayMessage;
+import org.solution.delaymessage.impl.RedisDelayMessageProducer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;

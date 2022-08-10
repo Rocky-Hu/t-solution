@@ -1,6 +1,6 @@
 package org.solution.delaymessage.persistence;
 
-import org.solution.delaymessage.common.DelayMessageStatus;
+import org.solution.delaymessage.common.message.DelayMessageStatus;
 import org.solution.delaymessage.exception.DelayMessageException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;

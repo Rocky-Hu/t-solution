@@ -1,4 +1,4 @@
-package org.solution.delaymessage.core.redis;
+package org.solution.delaymessage.impl;
 
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RedissonClient;
@@ -7,7 +7,7 @@ import org.redisson.codec.MarshallingCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solution.delaymessage.DelayMessageConsumer;
-import org.solution.delaymessage.common.DelayMessage;
+import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.DelayMessageListener;
 import org.springframework.util.Assert;
 /**

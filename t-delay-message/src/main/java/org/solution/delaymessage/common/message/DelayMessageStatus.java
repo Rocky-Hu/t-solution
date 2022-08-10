@@ -1,4 +1,4 @@
-package org.solution.delaymessage.common;
+package org.solution.delaymessage.common.message;
 
 public enum DelayMessageStatus {
 

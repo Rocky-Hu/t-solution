@@ -1,7 +1,7 @@
 package org.solution.delaymessage.persistence;
 
-import org.solution.delaymessage.common.DelayMessage;
-import org.solution.delaymessage.common.DelayMessageStatus;
+import org.solution.delaymessage.common.message.DelayMessage;
+import org.solution.delaymessage.common.message.DelayMessageStatus;
 import org.solution.delaymessage.util.JacksonHelper;
 
 import java.io.Serializable;

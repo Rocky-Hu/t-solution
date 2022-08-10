@@ -1,4 +1,4 @@
-package org.solution.delaymessage.common;
+package org.solution.delaymessage.common.message;
 
 import org.solution.delaymessage.util.CommonUtils;
 import org.springframework.util.Assert;
@@ -27,6 +27,10 @@ public class DelayMessage implements Serializable {
     }
 
     public DelayMessage(String topic, long delay, TimeUnit timeUnit, byte[] body) {
+        this(topic, null, null, delay, timeUnit, body);
+    }
+
+    public DelayMessage(String topic, String keys, String tags, long delay, TimeUnit timeUnit, byte[] body) {
         Assert.hasLength(topic, "topic can't be empty");
         Assert.notNull(delay, "delay can't be null");
         Assert.notNull(timeUnit, "timeUnit can't be null");
@@ -34,28 +38,17 @@ public class DelayMessage implements Serializable {
 
         if (timeUnit == TimeUnit.MICROSECONDS || timeUnit == TimeUnit.NANOSECONDS ) {
             throw new IllegalArgumentException("Unsupported time unit!");
+        }
+
+        if (keys != null && keys.length() > 0) {
+            this.setKeys(keys);
+        }
+
+        if (tags != null && tags.length() > 0) {
+            this.setTags(tags);
         }
 
         this.id = CommonUtils.generateUUID();
-        this.topic = topic;
-        this.delay = delay;
-        this.timeUnit = timeUnit;
-        this.bornTimestamp = System.currentTimeMillis();
-        this.body = body;
-    }
-
-    public DelayMessage(String id, String topic, long delay, TimeUnit timeUnit, byte[] body) {
-        Assert.hasLength(id, "id can't be empty");
-        Assert.hasLength(topic, "topic can't be empty");
-        Assert.notNull(delay, "delay can't be null");
-        Assert.notNull(timeUnit, "timeUnit can't be null");
-        Assert.notNull(body, "body can't be null");
-
-        if (timeUnit == TimeUnit.MICROSECONDS || timeUnit == TimeUnit.NANOSECONDS ) {
-            throw new IllegalArgumentException("Unsupported time unit!");
-        }
-
-        this.id = id;
         this.topic = topic;
         this.delay = delay;
         this.timeUnit = timeUnit;
@@ -117,6 +110,14 @@ public class DelayMessage implements Serializable {
 
     public void setTags(String tags) {
         this.setProperty(DelayMessageConstant.PROPERTY_TAGS, tags);
+    }
+
+    public void setKeys(String keys) {
+        this.setProperty(DelayMessageConstant.PROPERTY_KEYS, keys);
+    }
+
+    public String getKeys() {
+        return this.getProperty(DelayMessageConstant.PROPERTY_KEYS);
     }
 
     public String getProperty(final String name) {

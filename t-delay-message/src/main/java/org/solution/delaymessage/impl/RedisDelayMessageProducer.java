@@ -1,4 +1,4 @@
-package org.solution.delaymessage.core.redis;
+package org.solution.delaymessage.impl;
 
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
@@ -8,7 +8,8 @@ import org.redisson.codec.MarshallingCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solution.delaymessage.DelayMessageProducer;
-import org.solution.delaymessage.common.DelayMessage;
+import org.solution.delaymessage.common.message.DelayMessage;
+import org.solution.delaymessage.common.SendResult;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,13 +37,13 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
     }
 
     @Override
-    public void send(DelayMessage delayMessage) {
+    public SendResult send(DelayMessage delayMessage) {
         LOGGER.debug("send message: {}", delayMessage);
         delayedQueue(delayMessage.getTopic()).offer(delayMessage, delayMessage.getDelay(), delayMessage.getTimeUnit());
     }
 
     @Override
-    public void sendAsync(DelayMessage delayMessage) {
+    public SendResult sendAsync(DelayMessage delayMessage) {
         LOGGER.debug("sendAsync message: {}", delayMessage);
         delayedQueue(delayMessage.getTopic()).offerAsync(delayMessage, delayMessage.getDelay(), delayMessage.getTimeUnit());
     }

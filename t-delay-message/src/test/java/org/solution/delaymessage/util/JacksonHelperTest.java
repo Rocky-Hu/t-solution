@@ -2,7 +2,7 @@ package org.solution.delaymessage.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.solution.delaymessage.common.DelayMessage;
+import org.solution.delaymessage.common.message.DelayMessage;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
