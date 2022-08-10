@@ -1,6 +1,5 @@
 package org.solution.delaymessage.common.message;
 
-import org.solution.delaymessage.util.CommonUtils;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -11,11 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 public class DelayMessage implements Serializable {
 
-    private String id;
     private String topic;
     private long delay;
     private TimeUnit timeUnit;
-    private long bornTimestamp;
     private Map<String, String> properties;
 
     /**
@@ -48,20 +45,10 @@ public class DelayMessage implements Serializable {
             this.setTags(tags);
         }
 
-        this.id = CommonUtils.generateUUID();
         this.topic = topic;
         this.delay = delay;
         this.timeUnit = timeUnit;
-        this.bornTimestamp = System.currentTimeMillis();
         this.body = body;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getTopic() {
@@ -86,14 +73,6 @@ public class DelayMessage implements Serializable {
 
     public void setTimeUnit(TimeUnit timeUnit) {
         this.timeUnit = timeUnit;
-    }
-
-    public long getBornTimestamp() {
-        return bornTimestamp;
-    }
-
-    public void setBornTimestamp(long bornTimestamp) {
-        this.bornTimestamp = bornTimestamp;
     }
 
     public Map<String, String> getProperties() {
@@ -147,14 +126,11 @@ public class DelayMessage implements Serializable {
     @Override
     public String toString() {
         return "DelayMessage{" +
-                "id='" + id + '\'' +
-                ", topic='" + topic + '\'' +
+                "topic='" + topic + '\'' +
                 ", delay=" + delay +
                 ", timeUnit=" + timeUnit +
-                ", bornTimestamp=" + bornTimestamp +
                 ", properties=" + properties +
                 ", body=" + Arrays.toString(body) +
                 '}';
     }
-
 }

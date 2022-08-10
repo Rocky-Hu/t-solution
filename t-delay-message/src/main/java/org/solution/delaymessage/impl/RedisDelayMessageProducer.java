@@ -8,8 +8,13 @@ import org.redisson.codec.MarshallingCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solution.delaymessage.DelayMessageProducer;
+import org.solution.delaymessage.common.SendStatus;
 import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.common.SendResult;
+import org.solution.delaymessage.common.message.DelayMessageExt;
+import org.solution.delaymessage.exception.DelayMessagePersistentException;
+import org.solution.delaymessage.persistence.DelayMessageEntity;
+import org.solution.delaymessage.persistence.DelayMessageService;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,40 +28,89 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
     private final ConcurrentHashMap<String, Object> parallelLockMap = new ConcurrentHashMap<>();
 
     private RedissonClient redissonClient;
-    private ConcurrentHashMap<String, RDelayedQueue> delayedQueueRegistry = new ConcurrentHashMap<>();
+    private DelayMessageService delayMessageService;
+    private ConcurrentHashMap<String, RDelayedQueue<DelayMessageExt>> delayedQueueRegistry = new ConcurrentHashMap<>();
     private Codec codec;
 
-    public RedisDelayMessageProducer(RedissonClient redissonClient) {
-        this.redissonClient = redissonClient;
-        this.codec = new MarshallingCodec();
+    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageService delayMessageService) {
+        this(redissonClient, delayMessageService, new MarshallingCodec());
     }
 
-    public RedisDelayMessageProducer(RedissonClient redissonClient, Codec codec) {
+    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageService delayMessageService, Codec codec) {
         this.redissonClient = redissonClient;
+        this.delayMessageService = delayMessageService;
         this.codec = codec;
     }
 
     @Override
-    public SendResult send(DelayMessage delayMessage) {
-        LOGGER.debug("send message: {}", delayMessage);
-        delayedQueue(delayMessage.getTopic()).offer(delayMessage, delayMessage.getDelay(), delayMessage.getTimeUnit());
+    public SendResult send(DelayMessage message) {
+        final DelayMessageExt messageExt = toExt(message);
+
+        try {
+            saveToDb(messageExt);
+        } catch (DelayMessagePersistentException ex) {
+            return SendResult.fail(SendStatus.PERSISTENCE_FAIL);
+        }
+
+        saveToRedis(messageExt, true);
+
+        LOGGER.debug("send message: {}", messageExt);
+        return SendResult.success(messageExt.getId());
     }
 
     @Override
-    public SendResult sendAsync(DelayMessage delayMessage) {
-        LOGGER.debug("sendAsync message: {}", delayMessage);
-        delayedQueue(delayMessage.getTopic()).offerAsync(delayMessage, delayMessage.getDelay(), delayMessage.getTimeUnit());
+    public SendResult sendAsync(DelayMessage message) {
+        final DelayMessageExt messageExt = toExt(message);
+
+        saveToDb(messageExt);
+        saveToRedis(messageExt, false);
+
+        LOGGER.debug("sendAsync message: {}", messageExt);
+        return SendResult.success(messageExt.getId());
     }
 
-    private RDelayedQueue<DelayMessage> delayedQueue(String name) {
-        RDelayedQueue<DelayMessage> delayedQueue = delayedQueueRegistry.get(name);
+    private void saveToDb(DelayMessageExt messageExt) {
+        DelayMessageEntity delayMessageEntity = new DelayMessageEntity();
+        delayMessageEntity.init(messageExt);
+
+        try {
+            delayMessageService.insert(delayMessageEntity);
+        } catch (Exception ex) {
+            LOGGER.error("Save delay message to db error: {}", ex);
+            throw new DelayMessagePersistentException(ex);
+        }
+    }
+
+    private void saveToRedis(DelayMessageExt messageExt, boolean sync) {
+        RDelayedQueue<DelayMessageExt> delayedQueue = delayedQueue(messageExt.getTopic());
+        if (sync) {
+            delayedQueue.offer(messageExt, messageExt.getDelay(), messageExt.getTimeUnit());
+        } else {
+            delayedQueue.offerAsync(messageExt, messageExt.getDelay(), messageExt.getTimeUnit());
+        }
+    }
+
+    private DelayMessageExt toExt(DelayMessage delayMessage) {
+        DelayMessageExt delayMessageExt = new DelayMessageExt();
+        delayMessageExt.setTopic(delayMessage.getTopic());
+        delayMessageExt.setDelay(delayMessage.getDelay());
+        delayMessageExt.setTimeUnit(delayMessage.getTimeUnit());
+        delayMessageExt.setProperties(delayMessage.getProperties());
+        delayMessageExt.setBody(delayMessage.getBody());
+        delayMessageExt.setId();
+        delayMessageExt.setBornTimestamp(System.currentTimeMillis());
+        return delayMessageExt;
+    }
+
+    private RDelayedQueue<DelayMessageExt> delayedQueue(String name) {
+        RDelayedQueue<DelayMessageExt> delayedQueue = delayedQueueRegistry.get(name);
         if (delayedQueue != null) {
             return delayedQueue;
         } else {
             synchronized (getDelayedQueueInitialLock(name)) {
                 delayedQueue = delayedQueueRegistry.get(name);
                 if (delayedQueue == null) {
-                    RBlockingQueue<DelayMessage> initialBlockingQueue = redissonClient.getBlockingQueue(name, codec);
+                    RBlockingQueue<DelayMessageExt> initialBlockingQueue = redissonClient.getBlockingQueue(name, codec);
                     delayedQueue = redissonClient.getDelayedQueue(initialBlockingQueue);
                     delayedQueueRegistry.putIfAbsent(name, delayedQueue);
                     LOGGER.info("Register delayed queue, name: {}, count: {}", name, regCount.incrementAndGet());

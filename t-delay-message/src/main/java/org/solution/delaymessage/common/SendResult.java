@@ -3,11 +3,15 @@ package org.solution.delaymessage.common;
 public class SendResult {
 
     private SendStatus sendStatus;
-
     private String msgId;
 
     public SendResult() {
     }
+
+    public SendResult(SendStatus sendStatus) {
+        this.sendStatus = sendStatus;
+    }
+
 
     public SendResult(SendStatus sendStatus, String msgId) {
         this.sendStatus = sendStatus;
@@ -28,6 +32,18 @@ public class SendResult {
 
     public void setSendStatus(SendStatus sendStatus) {
         this.sendStatus = sendStatus;
+    }
+
+    public static SendResult success(String msgId) {
+        return new SendResult(SendStatus.SEND_SUCCESS, msgId);
+    }
+
+    public static SendResult fail() {
+        return new SendResult(SendStatus.SEND_FAIL);
+    }
+
+    public static SendResult fail(SendStatus sendStatus) {
+        return new SendResult(sendStatus);
     }
 
     @Override

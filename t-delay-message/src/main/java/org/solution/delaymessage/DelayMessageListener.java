@@ -1,9 +1,9 @@
 package org.solution.delaymessage;
 
-import org.solution.delaymessage.common.message.DelayMessage;
+import org.solution.delaymessage.common.message.DelayMessageExt;
 
 public interface DelayMessageListener {
 
-    void consumeMessage(DelayMessage delayMessage);
+    void consumeMessage(DelayMessageExt delayMessage);
 
 }

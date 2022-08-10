@@ -15,13 +15,16 @@ import java.util.List;
 
 public class JdbcDelayMessageService implements DelayMessageService {
 
-    private static final String DEFAULT_FIELDS = "id, topic, content, status, expire_time, create_time, modify_time";
+    private static final String DEFAULT_FIELDS = "id, topic, content, status, expire_time, delay, time_unit, tags, " +
+            "keys, properties, born_time, redelivery_times," +
+            "create_time, modify_time";
 
     private static final String DEFAULT_SELECT_STATEMENT = "select " + DEFAULT_FIELDS + " from delay_message where id = ?";
 
     private static final String DEFAULT_SELECT_BY_STATUS_STATEMENT = "select " + DEFAULT_FIELDS + " from delay_message where status = ?";
-    private static final String DEFAULT_INSERT_STATEMENT = "insert into delay_message(id, topic, content, status, expire_time)" +
-            "values(?,?,?,?,?)";
+    private static final String DEFAULT_INSERT_STATEMENT = "insert into delay_message(id, topic, content, status, expire_time, time_unit, tags, keys, " +
+            "properties, born_time, redelivery_times)" +
+            "values(?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String DEFAULT_UPDATE_STATUS_STATEMENT = "update delay_message set status=? where id = ?";
 
@@ -99,6 +102,12 @@ public class JdbcDelayMessageService implements DelayMessageService {
             entity.setContent(rs.getString("content"));
             entity.setStatus(DelayMessageStatus.getByCode(rs.getInt("status")));
             entity.setExpireTime(rs.getLong("expire_time"));
+            entity.setDelay(rs.getLong("delay"));
+            entity.setTimeUnit(rs.getInt("time_unit"));
+            entity.setTags(rs.getString("tags"));
+            entity.setKeys(rs.getString("keys"));
+            entity.setProperties(rs.getString("properties"));
+            entity.setRedeliveryTimes(rs.getInt("redelivery_times"));
             entity.setCreateTime(rs.getDate("create_time"));
             entity.setModifyTime(rs.getDate("modify_time"));
             return entity;

@@ -5,8 +5,8 @@ import org.solution.delaymessage.common.SendResult;
 
 public interface DelayMessageProducer {
 
-    SendResult send(DelayMessage delayMessage);
+    SendResult send(DelayMessage message);
 
-    SendResult sendAsync(DelayMessage delayMessage);
+    SendResult sendAsync(DelayMessage message);
 
 }

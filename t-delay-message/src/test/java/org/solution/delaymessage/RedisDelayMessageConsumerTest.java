@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
-import org.solution.delaymessage.common.message.DelayMessage;
+import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.solution.delaymessage.impl.RedisDelayMessageConsumer;
 
 public class RedisDelayMessageConsumerTest {
@@ -38,7 +38,7 @@ public class RedisDelayMessageConsumerTest {
         redisDelayMessageConsumer.subscribe("myTopic");
         redisDelayMessageConsumer.registerMessageListener(new DelayMessageListener() {
             @Override
-            public void consumeMessage(DelayMessage delayMessage) {
+            public void consumeMessage(DelayMessageExt delayMessage) {
             }
         });
     }
@@ -49,7 +49,7 @@ public class RedisDelayMessageConsumerTest {
         redisDelayMessageConsumer.subscribe("myTopic");
         redisDelayMessageConsumer.registerMessageListener(new DelayMessageListener() {
             @Override
-            public void consumeMessage(DelayMessage delayMessage) {
+            public void consumeMessage(DelayMessageExt delayMessage) {
             }
         });
     }

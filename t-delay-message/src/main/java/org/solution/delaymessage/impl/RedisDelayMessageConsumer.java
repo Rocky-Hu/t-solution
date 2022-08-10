@@ -7,8 +7,8 @@ import org.redisson.codec.MarshallingCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solution.delaymessage.DelayMessageConsumer;
-import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.DelayMessageListener;
+import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.springframework.util.Assert;
 /**
  * One consumer, one topic.
@@ -19,7 +19,7 @@ public class RedisDelayMessageConsumer implements DelayMessageConsumer {
 
     private RedissonClient redissonClient;
     private Codec codec;
-    private RBlockingQueue<DelayMessage> blockingQueue;
+    private RBlockingQueue<DelayMessageExt> blockingQueue;
     private DelayMessageListener delayMessageListener;
     private int consumerSize;
 
