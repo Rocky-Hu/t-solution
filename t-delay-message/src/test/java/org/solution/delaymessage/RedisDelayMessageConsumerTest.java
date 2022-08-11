@@ -8,7 +8,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.solution.delaymessage.consumer.ConsumeStatus;
 import org.solution.delaymessage.common.message.DelayMessageExt;
-import org.solution.delaymessage.consumer.RedisDelayMessageConsumer;
+import org.solution.delaymessage.consumer.redis.RedisDelayMessageConsumer;
 
 public class RedisDelayMessageConsumerTest {
 

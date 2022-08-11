@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solution.delaymessage.producer.SendResult;
 import org.solution.delaymessage.common.message.DelayMessage;
-import org.solution.delaymessage.producer.RedisDelayMessageProducer;
-import org.solution.delaymessage.storage.DelayMessageStorageService;
-import org.solution.delaymessage.storage.JdbcDelayMessageStorageService;
+import org.solution.delaymessage.producer.redis.RedisDelayMessageProducer;
+import org.solution.delaymessage.storage.DelayMessageDbStorageService;
+import org.solution.delaymessage.storage.JdbcDelayMessageDbStorageService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
@@ -26,7 +26,7 @@ public class RedisDelayMessageProducerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisDelayMessageConsumerTest.class);
 
     private RedissonClient redissonClient;
-    private DelayMessageStorageService delayMessageStorageService;
+    private DelayMessageDbStorageService delayMessageDbStorageService;
 
     @BeforeEach
     public void setUp() {
@@ -41,7 +41,7 @@ public class RedisDelayMessageProducerTest {
         dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/soms?currentSchema=public");
         dataSource.setUsername("postgres");
         dataSource.setPassword("14981498");
-        delayMessageStorageService = new JdbcDelayMessageStorageService(dataSource);
+        delayMessageDbStorageService = new JdbcDelayMessageDbStorageService(dataSource);
     }
 
     @AfterEach
@@ -56,7 +56,7 @@ public class RedisDelayMessageProducerTest {
 
     @Test
     public void test_send() {
-        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageStorageService);
+        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService);
         String message = "hello";
         DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
@@ -65,7 +65,7 @@ public class RedisDelayMessageProducerTest {
 
     @Test
     public void test_sendAsync() {
-        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageStorageService);
+        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService);
         String message = "hello";
         DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
@@ -74,7 +74,7 @@ public class RedisDelayMessageProducerTest {
 
     @Test
     public void test_sendAsync_with_codec() {
-        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageStorageService, new JsonJacksonCodec());
+        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService, new JsonJacksonCodec());
         String message = "hello";
         DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
@@ -86,7 +86,7 @@ public class RedisDelayMessageProducerTest {
 
         AtomicInteger count = new AtomicInteger();
 
-        DelayMessageProducer delayMessageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageStorageService);
+        DelayMessageProducer delayMessageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService);
         CountDownLatch countDownLatch = new CountDownLatch(10);
 
         for (int i=0;i<1000;i++) {

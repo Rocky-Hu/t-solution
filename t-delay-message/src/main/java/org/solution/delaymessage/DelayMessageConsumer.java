@@ -6,6 +6,6 @@ public interface DelayMessageConsumer {
 
     void unsubscribe(String topic);
 
-    void registerMessageListener(DelayMessageListener delayMessageListener);
+    void registerMessageListener(DelayMessageListener messageListener);
 
 }

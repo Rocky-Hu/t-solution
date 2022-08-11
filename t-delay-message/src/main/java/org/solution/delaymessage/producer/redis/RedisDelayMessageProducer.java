@@ -1,4 +1,4 @@
-package org.solution.delaymessage.producer;
+package org.solution.delaymessage.producer.redis;
 
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
@@ -13,8 +13,11 @@ import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.common.message.DelayMessageConstant;
 import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.solution.delaymessage.exception.DelayMessagePersistentException;
+import org.solution.delaymessage.producer.DelayMessageProducerConfig;
+import org.solution.delaymessage.producer.SendResult;
+import org.solution.delaymessage.producer.SendStatus;
 import org.solution.delaymessage.storage.DelayMessageEntity;
-import org.solution.delaymessage.storage.DelayMessageStorageService;
+import org.solution.delaymessage.storage.DelayMessageDbStorageService;
 import org.solution.delaymessage.utils.MsgIdGenerator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -33,24 +36,24 @@ public class RedisDelayMessageProducer implements DelayMessageProducer {
     private final ConcurrentHashMap<String, Object> parallelLockMap = new ConcurrentHashMap<>();
 
     private RedissonClient redissonClient;
-    private DelayMessageStorageService messageStorageService;
+    private DelayMessageDbStorageService messageStorageService;
     private ConcurrentHashMap<String, RDelayedQueue<DelayMessageExt>> delayedQueueRegistry = new ConcurrentHashMap<>();
     private Codec codec;
     private ThreadPoolTaskExecutor executor;
 
-    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageStorageService messageStorageService) {
+    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageDbStorageService messageStorageService) {
         this(redissonClient, messageStorageService, new MarshallingCodec(), null);
     }
 
-    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageStorageService messageStorageService, Codec codec) {
+    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageDbStorageService messageStorageService, Codec codec) {
         this(redissonClient, messageStorageService, codec, null);
     }
 
-    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageStorageService messageStorageService, DelayMessageProducerConfig producerConfig) {
+    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageDbStorageService messageStorageService, DelayMessageProducerConfig producerConfig) {
         this(redissonClient, messageStorageService, new MarshallingCodec(), producerConfig);
     }
 
-    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageStorageService messageStorageService, Codec codec, DelayMessageProducerConfig producerConfig) {
+    public RedisDelayMessageProducer(RedissonClient redissonClient, DelayMessageDbStorageService messageStorageService, Codec codec, DelayMessageProducerConfig producerConfig) {
         this.redissonClient = redissonClient;
         this.messageStorageService = messageStorageService;
         this.codec = codec;

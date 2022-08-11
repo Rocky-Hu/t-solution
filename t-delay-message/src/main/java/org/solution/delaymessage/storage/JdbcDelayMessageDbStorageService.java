@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-public class JdbcDelayMessageStorageService implements DelayMessageStorageService {
+public class JdbcDelayMessageDbStorageService implements DelayMessageDbStorageService {
 
     private static final String DEFAULT_FIELDS = "id, topic, content, status, expire_time, delay, time_unit, tags, " +
             "keys, properties, born_time, redelivery_times," +
@@ -38,7 +38,7 @@ public class JdbcDelayMessageStorageService implements DelayMessageStorageServic
 
     private RowMapper<DelayMessageEntity> rowMapper = new DelayMessageEntityRowMapper();
 
-    public JdbcDelayMessageStorageService(DataSource dataSource) {
+    public JdbcDelayMessageDbStorageService(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -81,7 +81,7 @@ public class JdbcDelayMessageStorageService implements DelayMessageStorageServic
     }
 
     public void update(String id, Integer status) {
-        int count = jdbcTemplate.update(DEFAULT_UPDATE_STATUS_STATEMENT, new Object[]{status, id});
+        int count = jdbcTemplate.update(DEFAULT_UPDATE_STATUS_STATEMENT, new Object[]{id, status});
         if (count != 1) {
             throw new DelayMessageException("No record found with id = " + id);
         }

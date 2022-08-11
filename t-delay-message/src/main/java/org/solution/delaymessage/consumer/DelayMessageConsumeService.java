@@ -4,6 +4,6 @@ import org.solution.delaymessage.common.message.DelayMessageExt;
 
 public interface DelayMessageConsumeService {
 
-    ConsumeStatus consumeMessage(final DelayMessageExt msg);
+    void consumeMessage(final DelayMessageExt msg);
 
 }

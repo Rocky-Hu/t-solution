@@ -2,7 +2,7 @@ package org.solution.delaymessage.storage;
 
 import java.util.List;
 
-public interface DelayMessageStorageService {
+public interface DelayMessageDbStorageService {
 
     DelayMessageEntity get(String id);
 
