@@ -74,13 +74,14 @@ public class DefaultDelayMessageConsumeService implements DelayMessageConsumeSer
         CompletableFuture.supplyAsync(()-> this.messageListenerInner.consumeMessage(msg), consumeExecutor).whenCompleteAsync((t, e)->{
             if (t != null) {
                 if (t == ConsumeStatus.CONSUME_SUCCESS) {
-                    dbStorageService.update(msg.getId(), DelayMessageStatus.CONSUME_SUCCESS.getCode());
+                    dbStorageService.updateStatus(msg.getId(), DelayMessageStatus.CONSUME_SUCCESS.getCode());
                 } else if (t == ConsumeStatus.RECONSUME_LATTER) {
                 }
             }
 
             if (e != null) {
                 LOGGER.error("Consume message error: msgId-{}, e-{}", msg.getId(), e);
+                dbStorageService.updateConsumeExTimes(msg.getId());
             }
         }, consumeResultExecutor);
     }

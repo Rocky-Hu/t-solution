@@ -28,6 +28,8 @@ public class DelayMessageEntity implements Serializable {
     private String properties;
     private Long bornTime;
     private Integer redeliveryTimes;
+
+    private Integer consumeExTimes;
     private Date createTime;
     private Date modifyTime;
 
@@ -127,6 +129,14 @@ public class DelayMessageEntity implements Serializable {
         this.redeliveryTimes = redeliveryTimes;
     }
 
+    public Integer getConsumeExTimes() {
+        return consumeExTimes;
+    }
+
+    public void setConsumeExTimes(Integer consumeExTimes) {
+        this.consumeExTimes = consumeExTimes;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -156,6 +166,7 @@ public class DelayMessageEntity implements Serializable {
         this.setProperties(JacksonHelper.writeValueAsString(delayMessageExt.getProperties()));
         this.setBornTime(delayMessageExt.getBornTimestamp());
         this.setRedeliveryTimes(delayMessageExt.getRedeliveryTimes());
+        this.setConsumeExTimes(delayMessageExt.getConsumeExTimes());
     }
 
     public DelayMessageExt to() {
@@ -168,6 +179,7 @@ public class DelayMessageEntity implements Serializable {
         message.setProperties(JacksonHelper.readValue(this.getProperties(), Map.class));
         message.setBornTimestamp(this.getBornTime());
         message.setRedeliveryTimes(this.getRedeliveryTimes());
+        message.setConsumeExTimes(this.getConsumeExTimes());
         return message;
     }
 

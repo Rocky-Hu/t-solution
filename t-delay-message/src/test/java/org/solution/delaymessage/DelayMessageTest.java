@@ -3,24 +3,23 @@ package org.solution.delaymessage;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
-import org.solution.delaymessage.consumer.ConsumeStatus;
-import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.solution.delaymessage.consumer.DefaultDelayMessageConsumeService;
-import org.solution.delaymessage.consumer.redis.RedisDelayMessageConsumer;
+import org.solution.delaymessage.producer.DefaultDelayMessageProduceService;
+import org.solution.delaymessage.producer.DelayMessageProduceService;
 import org.solution.delaymessage.storage.DelayMessageDbStorageService;
 import org.solution.delaymessage.storage.DelayMessageRedisStorageService;
 import org.solution.delaymessage.storage.JdbcDelayMessageDbStorageService;
 
-public class RedisDelayMessageConsumerTest {
+public abstract class DelayMessageTest {
 
-    private RedissonClient redissonClient;
-    private DelayMessageDbStorageService dbStorageService;
-    private DelayMessageRedisStorageService redisStorageService;
-    private DefaultDelayMessageConsumeService consumeService;
+    public RedissonClient redissonClient;
+    public DelayMessageDbStorageService dbStorageService;
+    public DelayMessageRedisStorageService redisStorageService;
+    public DelayMessageProduceService produceService;
+    public DefaultDelayMessageConsumeService consumeService;
 
     @BeforeEach
     public void setUp() {
@@ -38,41 +37,18 @@ public class RedisDelayMessageConsumerTest {
         dataSource.setPassword("14981498");
         dbStorageService = new JdbcDelayMessageDbStorageService(dataSource);
 
+        produceService = new DefaultDelayMessageProduceService(dbStorageService, redisStorageService);
         consumeService = new DefaultDelayMessageConsumeService(dbStorageService, redisStorageService);
     }
 
     @AfterEach
     public void setDown() {
         try {
-            Thread.sleep(60 * 1000);
+            Thread.sleep(120 * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         redissonClient.shutdown();
-    }
-
-    @Test
-    public void test_orderly_consume() {
-        DelayMessageConsumer messageConsumer = new RedisDelayMessageConsumer(consumeService);
-        messageConsumer.subscribe("myTopic");
-        messageConsumer.registerMessageListener(new DelayMessageListener() {
-            @Override
-            public ConsumeStatus consumeMessage(DelayMessageExt message) {
-                return ConsumeStatus.CONSUME_SUCCESS;
-            }
-        });
-    }
-
-    @Test
-    public void test_concurrently_consume() {
-        DelayMessageConsumer messageConsumer = new RedisDelayMessageConsumer(consumeService);
-        messageConsumer.subscribe("myTopic");
-        messageConsumer.registerMessageListener(new DelayMessageListener() {
-            @Override
-            public ConsumeStatus consumeMessage(DelayMessageExt message) {
-                return ConsumeStatus.CONSUME_SUCCESS;
-            }
-        });
     }
 
 }

@@ -19,6 +19,8 @@ public interface DelayMessageDbStorageService {
 
     void deleteByStatus(Integer status);
 
-    void update(String id, Integer status);
+    void updateStatus(String id, Integer status);
+
+    void updateConsumeExTimes(String id);
 
 }

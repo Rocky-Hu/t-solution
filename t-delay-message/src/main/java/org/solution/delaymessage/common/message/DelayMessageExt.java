@@ -13,6 +13,8 @@ public class DelayMessageExt extends DelayMessage {
 
     private int redeliveryTimes;
 
+    private int consumeExTimes;
+
     public String getId() {
         return id;
     }
@@ -37,6 +39,14 @@ public class DelayMessageExt extends DelayMessage {
         this.redeliveryTimes = redeliveryTimes;
     }
 
+    public int getConsumeExTimes() {
+        return consumeExTimes;
+    }
+
+    public void setConsumeExTimes(int consumeExTimes) {
+        this.consumeExTimes = consumeExTimes;
+    }
+
     @Override
     public String toString() {
         return "DelayMessage{" +
@@ -48,6 +58,7 @@ public class DelayMessageExt extends DelayMessage {
                 ", body=" + Arrays.toString(getBody()) +
                 ", bornTimestamp=" + bornTimestamp +
                 ", redeliveryTimes=" + redeliveryTimes +
+                ", consumeExTimes=" + consumeExTimes +
                 '}';
     }
 
