@@ -27,6 +27,11 @@ public class DefaultDelayMessageProduceService implements DelayMessageProduceSer
     private ThreadPoolTaskExecutor executor;
 
     public DefaultDelayMessageProduceService(DelayMessageDbStorageService dbStorageService,
+                                             DelayMessageRedisStorageService redisStorageService) {
+        this(dbStorageService, redisStorageService, null);
+    }
+
+    public DefaultDelayMessageProduceService(DelayMessageDbStorageService dbStorageService,
                                              DelayMessageRedisStorageService redisStorageService,
                                              DelayMessageProducerConfig producerConfig) {
         this.dbStorageService = dbStorageService;

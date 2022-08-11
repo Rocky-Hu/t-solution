@@ -27,6 +27,10 @@ public class DefaultDelayMessageConsumeService implements DelayMessageConsumeSer
     private ThreadPoolTaskExecutor consumeExecutor;
     private ThreadPoolTaskExecutor consumeResultExecutor;
 
+    public DefaultDelayMessageConsumeService(DelayMessageDbStorageService dbStorageService, DelayMessageRedisStorageService redisStorageService) {
+       this(dbStorageService, redisStorageService, null);
+    }
+
     public DefaultDelayMessageConsumeService(DelayMessageDbStorageService dbStorageService, DelayMessageRedisStorageService redisStorageService,
                                              DelayMessageConsumerConfig consumerConfig) {
         this.dbStorageService = dbStorageService;

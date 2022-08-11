@@ -2,7 +2,7 @@ package org.solution.delaymessage.producer.redis;
 
 import org.solution.delaymessage.DelayMessageProducer;
 import org.solution.delaymessage.common.message.DelayMessage;
-import org.solution.delaymessage.producer.DefaultDelayMessageProduceService;
+import org.solution.delaymessage.producer.DelayMessageProduceService;
 import org.solution.delaymessage.producer.ProduceResult;
 
 /**
@@ -10,9 +10,9 @@ import org.solution.delaymessage.producer.ProduceResult;
  */
 public class RedisDelayMessageProducer implements DelayMessageProducer {
 
-    private DefaultDelayMessageProduceService messageProduceService;
+    private DelayMessageProduceService messageProduceService;
 
-    public RedisDelayMessageProducer(DefaultDelayMessageProduceService messageProduceService) {
+    public RedisDelayMessageProducer(DelayMessageProduceService messageProduceService) {
         this.messageProduceService = messageProduceService;
     }
 

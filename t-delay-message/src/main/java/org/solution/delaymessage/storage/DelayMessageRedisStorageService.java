@@ -4,6 +4,7 @@ import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.Codec;
+import org.redisson.codec.MarshallingCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solution.delaymessage.common.message.DelayMessageExt;
@@ -24,6 +25,10 @@ public class DelayMessageRedisStorageService {
     private ConcurrentHashMap<String, RDelayedQueue<DelayMessageExt>> delayedQueueRegistry = new ConcurrentHashMap<>();
     private Codec codec;
     private final ConcurrentHashMap<String, Object> parallelLockMap = new ConcurrentHashMap<>();
+
+    public DelayMessageRedisStorageService(RedissonClient redissonClient) {
+        this(redissonClient, new MarshallingCodec());
+    }
 
     public DelayMessageRedisStorageService(RedissonClient redissonClient, Codec codec) {
         this.redissonClient = redissonClient;

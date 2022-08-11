@@ -6,14 +6,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
-import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.solution.delaymessage.consumer.DefaultDelayMessageConsumeService;
+import org.solution.delaymessage.consumer.DelayMessageConsumeService;
+import org.solution.delaymessage.producer.DefaultDelayMessageProduceService;
+import org.solution.delaymessage.producer.DelayMessageProduceService;
 import org.solution.delaymessage.producer.ProduceResult;
 import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.producer.redis.RedisDelayMessageProducer;
 import org.solution.delaymessage.storage.DelayMessageDbStorageService;
+import org.solution.delaymessage.storage.DelayMessageRedisStorageService;
 import org.solution.delaymessage.storage.JdbcDelayMessageDbStorageService;
 
 import java.nio.charset.StandardCharsets;
@@ -26,7 +30,9 @@ public class RedisDelayMessageProducerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisDelayMessageConsumerTest.class);
 
     private RedissonClient redissonClient;
-    private DelayMessageDbStorageService delayMessageDbStorageService;
+    private DelayMessageDbStorageService dbStorageService;
+    private DelayMessageRedisStorageService redisStorageService;
+    private DelayMessageProduceService produceService;
 
     @BeforeEach
     public void setUp() {
@@ -35,13 +41,16 @@ public class RedisDelayMessageProducerTest {
         config.useSingleServer().setAddress("redis://192.168.56.99:6379");
 //        config.useSingleServer().setConnectionPoolSize(1000);
         redissonClient = Redisson.create(config);
+        redisStorageService = new DelayMessageRedisStorageService(redissonClient);
 
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/soms?currentSchema=public");
         dataSource.setUsername("postgres");
         dataSource.setPassword("14981498");
-        delayMessageDbStorageService = new JdbcDelayMessageDbStorageService(dataSource);
+        dbStorageService = new JdbcDelayMessageDbStorageService(dataSource);
+
+        produceService = new DefaultDelayMessageProduceService(dbStorageService, redisStorageService);
     }
 
     @AfterEach
@@ -56,7 +65,7 @@ public class RedisDelayMessageProducerTest {
 
     @Test
     public void test_send() {
-        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService);
+        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(produceService);
         String message = "hello";
         DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
@@ -65,7 +74,7 @@ public class RedisDelayMessageProducerTest {
 
     @Test
     public void test_sendAsync() {
-        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService);
+        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(produceService);
         String message = "hello";
         DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
@@ -74,7 +83,7 @@ public class RedisDelayMessageProducerTest {
 
     @Test
     public void test_sendAsync_with_codec() {
-        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService, new JsonJacksonCodec());
+        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(produceService);
         String message = "hello";
         DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                 TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
@@ -86,7 +95,7 @@ public class RedisDelayMessageProducerTest {
 
         AtomicInteger count = new AtomicInteger();
 
-        DelayMessageProducer delayMessageProducer = new RedisDelayMessageProducer(redissonClient, delayMessageDbStorageService);
+        DelayMessageProducer messageProducer = new RedisDelayMessageProducer(produceService);
         CountDownLatch countDownLatch = new CountDownLatch(10);
 
         for (int i=0;i<1000;i++) {
@@ -97,7 +106,7 @@ public class RedisDelayMessageProducerTest {
                     countDownLatch.countDown();
                     DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                             TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
-                    ProduceResult produceResult = delayMessageProducer.send(delayMessage);
+                    ProduceResult produceResult = messageProducer.send(delayMessage);
                     LOGGER.info("TEST-RESULT:{}:{}", count.incrementAndGet(), produceResult);
                 }
             }, "thread-" + i).start();
