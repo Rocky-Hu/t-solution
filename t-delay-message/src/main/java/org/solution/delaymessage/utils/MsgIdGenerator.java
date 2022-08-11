@@ -1,4 +1,4 @@
-package org.solution.delaymessage.util;
+package org.solution.delaymessage.utils;
 
 import java.util.UUID;
 

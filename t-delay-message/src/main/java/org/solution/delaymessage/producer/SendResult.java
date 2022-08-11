@@ -1,4 +1,4 @@
-package org.solution.delaymessage.common;
+package org.solution.delaymessage.producer;
 
 public class SendResult {
 
@@ -36,10 +36,6 @@ public class SendResult {
 
     public static SendResult success(String msgId) {
         return new SendResult(SendStatus.SEND_SUCCESS, msgId);
-    }
-
-    public static SendResult fail() {
-        return new SendResult(SendStatus.SEND_FAIL);
     }
 
     public static SendResult fail(SendStatus sendStatus) {

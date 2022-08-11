@@ -1,9 +1,9 @@
-package org.solution.delaymessage.persistence;
+package org.solution.delaymessage.storage;
 
 import org.solution.delaymessage.common.message.DelayMessageConstant;
 import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.solution.delaymessage.common.message.DelayMessageStatus;
-import org.solution.delaymessage.util.JacksonHelper;
+import org.solution.delaymessage.utils.JacksonHelper;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -169,16 +169,14 @@ public class DelayMessageEntity implements Serializable {
     }
 
     private Long calculateExpireTime(long bornTimestamp, long delay, TimeUnit timeUnit) {
-        if (TimeUnit.MILLISECONDS == timeUnit) {
+        if (TimeUnit.SECONDS == timeUnit) {
             return bornTimestamp + delay;
-        } else if (TimeUnit.SECONDS == timeUnit) {
-            return bornTimestamp + 1000 * delay;
         } else if (TimeUnit.MINUTES == timeUnit) {
-            return bornTimestamp + 60 * 1000 * delay;
+            return bornTimestamp + 60 * delay;
         } else if (TimeUnit.HOURS == timeUnit) {
-            return bornTimestamp + 60 * 60 * 1000 * delay;
+            return bornTimestamp + 60 * 60 * delay;
         } else if (TimeUnit.DAYS == timeUnit) {
-            return bornTimestamp + 24 * 60 * 60 * 1000 * delay;
+            return bornTimestamp + 24 * 60 * 60 * delay;
         } else {
             throw new IllegalArgumentException("Unsupported time unit!");
         }

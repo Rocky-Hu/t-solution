@@ -1,4 +1,4 @@
-package org.solution.delaymessage.persistence;
+package org.solution.delaymessage.storage;
 
 import org.solution.delaymessage.common.message.DelayMessageStatus;
 import org.solution.delaymessage.exception.DelayMessageException;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-public class JdbcDelayMessageService implements DelayMessageService {
+public class JdbcDelayMessageStorageService implements DelayMessageStorageService {
 
     private static final String DEFAULT_FIELDS = "id, topic, content, status, expire_time, delay, time_unit, tags, " +
             "keys, properties, born_time, redelivery_times," +
@@ -22,9 +22,9 @@ public class JdbcDelayMessageService implements DelayMessageService {
     private static final String DEFAULT_SELECT_STATEMENT = "select " + DEFAULT_FIELDS + " from delay_message where id = ?";
 
     private static final String DEFAULT_SELECT_BY_STATUS_STATEMENT = "select " + DEFAULT_FIELDS + " from delay_message where status = ?";
-    private static final String DEFAULT_INSERT_STATEMENT = "insert into delay_message(id, topic, content, status, expire_time, time_unit, tags, keys, " +
+    private static final String DEFAULT_INSERT_STATEMENT = "insert into delay_message(id, topic, content, status, expire_time, delay, time_unit, tags, keys, " +
             "properties, born_time, redelivery_times)" +
-            "values(?,?,?,?,?,?,?,?,?,?,?)";
+            "values(?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String DEFAULT_UPDATE_STATUS_STATEMENT = "update delay_message set status=? where id = ?";
 
@@ -38,7 +38,7 @@ public class JdbcDelayMessageService implements DelayMessageService {
 
     private RowMapper<DelayMessageEntity> rowMapper = new DelayMessageEntityRowMapper();
 
-    public JdbcDelayMessageService(DataSource dataSource) {
+    public JdbcDelayMessageStorageService(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -87,9 +87,10 @@ public class JdbcDelayMessageService implements DelayMessageService {
         }
     }
 
-    private Object[] getFields(DelayMessageEntity delayMessage) {
-        return new Object[]{delayMessage.getId(), delayMessage.getTopic(), delayMessage.getContent(),
-                delayMessage.getStatus(), delayMessage.getExpireTime()};
+    private Object[] getFields(DelayMessageEntity entity) {
+        return new Object[]{entity.getId(), entity.getTopic(), entity.getContent(),
+                entity.getStatus().getCode(), entity.getExpireTime(), entity.getDelay(), entity.getTimeUnit(), entity.getTags(), entity.getKeys(),
+                entity.getProperties(), entity.getBornTime(), entity.getRedeliveryTimes()};
     }
 
     private class DelayMessageEntityRowMapper implements RowMapper<DelayMessageEntity> {

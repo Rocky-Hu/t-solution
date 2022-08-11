@@ -1,5 +1,7 @@
 package org.solution.delaymessage.common.message;
 
+import java.util.Arrays;
+
 public class DelayMessageExt extends DelayMessage {
 
     private String id;
@@ -34,8 +36,13 @@ public class DelayMessageExt extends DelayMessage {
 
     @Override
     public String toString() {
-        return "DelayMessageExt{" +
-                "id='" + id + '\'' +
+        return "DelayMessage{" +
+                "msgId='" + id + '\'' +
+                "topic='" + getTopic() + '\'' +
+                ", delay=" + getDelay() +
+                ", timeUnit=" + getTimeUnit() +
+                ", properties=" + getProperties() +
+                ", body=" + Arrays.toString(getBody()) +
                 ", bornTimestamp=" + bornTimestamp +
                 ", redeliveryTimes=" + redeliveryTimes +
                 '}';

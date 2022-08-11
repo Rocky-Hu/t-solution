@@ -1,4 +1,4 @@
-package org.solution.delaymessage.util;
+package org.solution.delaymessage.utils;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;

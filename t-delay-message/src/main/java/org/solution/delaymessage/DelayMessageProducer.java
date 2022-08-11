@@ -1,7 +1,7 @@
-package org.solution.delaymessage.core;
+package org.solution.delaymessage;
 
 import org.solution.delaymessage.common.message.DelayMessage;
-import org.solution.delaymessage.common.SendResult;
+import org.solution.delaymessage.producer.SendResult;
 
 public interface DelayMessageProducer {
 

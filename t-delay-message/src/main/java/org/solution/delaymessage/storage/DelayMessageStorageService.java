@@ -1,8 +1,8 @@
-package org.solution.delaymessage.persistence;
+package org.solution.delaymessage.storage;
 
 import java.util.List;
 
-public interface DelayMessageService {
+public interface DelayMessageStorageService {
 
     DelayMessageEntity get(String id);
 

@@ -1,4 +1,4 @@
-package org.solution.delaymessage.core.impl;
+package org.solution.delaymessage.consumer;
 
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RedissonClient;
@@ -6,8 +6,8 @@ import org.redisson.client.codec.Codec;
 import org.redisson.codec.MarshallingCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solution.delaymessage.core.DelayMessageConsumer;
-import org.solution.delaymessage.core.DelayMessageListener;
+import org.solution.delaymessage.DelayMessageConsumer;
+import org.solution.delaymessage.DelayMessageListener;
 import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.springframework.util.Assert;
 /**
@@ -66,8 +66,9 @@ public class RedisDelayMessageConsumer implements DelayMessageConsumer {
 
         for (int i = 0; i < consumerSize; i++) {
             blockingQueue.subscribeOnElements((t) ->{
-                LOGGER.debug("Consume message, Thread={}, Message={}", Thread.currentThread().getName(), t);
-                delayMessageListener.consumeMessage(t);
+                LOGGER.debug("Consume message, {}", t);
+                ConsumeStatus consumeStatus = delayMessageListener.consumeMessage(t);
+
             });
         }
     }

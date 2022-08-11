@@ -24,4 +24,12 @@ public enum DelayMessageStatus {
         return null;
     }
 
+    public int getCode() {
+        return code;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
 }
