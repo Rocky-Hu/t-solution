@@ -10,7 +10,7 @@ import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.solution.delaymessage.producer.SendResult;
+import org.solution.delaymessage.producer.ProduceResult;
 import org.solution.delaymessage.common.message.DelayMessage;
 import org.solution.delaymessage.producer.redis.RedisDelayMessageProducer;
 import org.solution.delaymessage.storage.DelayMessageDbStorageService;
@@ -97,8 +97,8 @@ public class RedisDelayMessageProducerTest {
                     countDownLatch.countDown();
                     DelayMessage delayMessage = new DelayMessage("myTopic", 5,
                             TimeUnit.SECONDS, message.getBytes(StandardCharsets.UTF_8));
-                    SendResult sendResult = delayMessageProducer.send(delayMessage);
-                    LOGGER.info("TEST-RESULT:{}:{}", count.incrementAndGet(), sendResult);
+                    ProduceResult produceResult = delayMessageProducer.send(delayMessage);
+                    LOGGER.info("TEST-RESULT:{}:{}", count.incrementAndGet(), produceResult);
                 }
             }, "thread-" + i).start();
         }

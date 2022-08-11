@@ -1,5 +1,8 @@
 package org.solution.delaymessage.common.message;
 
+/**
+ * @author huxuewang
+ */
 public enum DelayMessageMode {
 
     BT(0, "补推模式"),

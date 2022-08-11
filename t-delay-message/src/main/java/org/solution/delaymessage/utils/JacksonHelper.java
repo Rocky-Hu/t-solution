@@ -11,6 +11,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.redisson.codec.JsonJacksonCodec;
 import org.solution.delaymessage.exception.DelayMessageException;
 
+/**
+ * @author huxuewang
+ */
 public class JacksonHelper {
 
     public static final ObjectMapper objectMapper = new ObjectMapper();

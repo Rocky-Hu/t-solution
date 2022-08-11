@@ -1,5 +1,8 @@
 package org.solution.delaymessage.exception;
 
+/**
+ * @author huxuewang
+ */
 public class DelayMessagePersistentException extends RuntimeException {
 
     public DelayMessagePersistentException() {

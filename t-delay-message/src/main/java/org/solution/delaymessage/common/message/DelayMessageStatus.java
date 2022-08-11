@@ -1,5 +1,8 @@
 package org.solution.delaymessage.common.message;
 
+/**
+ * @author huxuewang
+ */
 public enum DelayMessageStatus {
 
     CONSUME_PENDING(0, "待消费"),

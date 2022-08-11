@@ -1,5 +1,8 @@
 package org.solution.delaymessage.consumer;
 
+/**
+ * @author huxuewang
+ */
 public class DelayMessageConsumerConfig {
 
     /**

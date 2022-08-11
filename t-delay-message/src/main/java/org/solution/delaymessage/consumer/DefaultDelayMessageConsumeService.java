@@ -1,28 +1,36 @@
 package org.solution.delaymessage.consumer;
 
+import org.redisson.api.RBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.solution.delaymessage.DelayMessageListener;
 import org.solution.delaymessage.common.message.DelayMessageExt;
 import org.solution.delaymessage.common.message.DelayMessageStatus;
 import org.solution.delaymessage.storage.DelayMessageDbStorageService;
+import org.solution.delaymessage.storage.DelayMessageRedisStorageService;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * @author huxuewang
+ */
 public class DefaultDelayMessageConsumeService implements DelayMessageConsumeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDelayMessageConsumeService.class);
 
+    private DelayMessageDbStorageService dbStorageService;
+    private DelayMessageRedisStorageService redisStorageService;
     private DelayMessageConsumerConfig consumerConfig;
     private DelayMessageListener messageListenerInner;
-    private DelayMessageDbStorageService messageStorageService;
     private ThreadPoolTaskExecutor consumeExecutor;
     private ThreadPoolTaskExecutor consumeResultExecutor;
 
-    public DefaultDelayMessageConsumeService(DelayMessageDbStorageService messageStorageService, DelayMessageConsumerConfig consumerConfig) {
-        this.messageStorageService = messageStorageService;
+    public DefaultDelayMessageConsumeService(DelayMessageDbStorageService dbStorageService, DelayMessageRedisStorageService redisStorageService,
+                                             DelayMessageConsumerConfig consumerConfig) {
+        this.dbStorageService = dbStorageService;
+        this.redisStorageService = redisStorageService;
 
         if (consumerConfig == null) {
             consumerConfig = new DelayMessageConsumerConfig();
@@ -62,7 +70,7 @@ public class DefaultDelayMessageConsumeService implements DelayMessageConsumeSer
         CompletableFuture.supplyAsync(()-> this.messageListenerInner.consumeMessage(msg), consumeExecutor).whenCompleteAsync((t, e)->{
             if (t != null) {
                 if (t == ConsumeStatus.CONSUME_SUCCESS) {
-                    messageStorageService.update(msg.getId(), DelayMessageStatus.CONSUME_SUCCESS.getCode());
+                    dbStorageService.update(msg.getId(), DelayMessageStatus.CONSUME_SUCCESS.getCode());
                 } else if (t == ConsumeStatus.RECONSUME_LATTER) {
                 }
             }
@@ -75,6 +83,10 @@ public class DefaultDelayMessageConsumeService implements DelayMessageConsumeSer
 
     public void registerMessageListener(DelayMessageListener messageListener) {
         this.messageListenerInner = messageListener;
+    }
+
+    public RBlockingQueue<DelayMessageExt> getBlockingQueue(String topic) {
+        return redisStorageService.getBlockingQueue(topic);
     }
 
 }

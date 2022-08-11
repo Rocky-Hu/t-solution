@@ -1,7 +1,9 @@
 package org.solution.delaymessage.producer;
 
+/**
+ * @author huxuewang
+ */
 public class DelayMessageProducerConfig {
-
     private int corePoolSize;
     private int maxPoolSize;
     private int queueCapacity;
@@ -9,6 +11,11 @@ public class DelayMessageProducerConfig {
     private int keepAliveSeconds;
 
     public DelayMessageProducerConfig() {
+        this.corePoolSize = Runtime.getRuntime().availableProcessors();
+        this.maxPoolSize = Runtime.getRuntime().availableProcessors() * 2;
+        this.queueCapacity = 10000;
+        this.threadNamePrefix = "DelayMessageProducerThread-";
+        this.keepAliveSeconds = 60;
     }
 
     public DelayMessageProducerConfig(int corePoolSize, int maxPoolSize, int queueCapacity, String threadNamePrefix, int keepAliveSeconds) {

@@ -1,12 +1,15 @@
 package org.solution.delaymessage;
 
 import org.solution.delaymessage.common.message.DelayMessage;
-import org.solution.delaymessage.producer.SendResult;
+import org.solution.delaymessage.producer.ProduceResult;
 
+/**
+ * @author huxuewang
+ */
 public interface DelayMessageProducer {
 
-    SendResult send(DelayMessage message);
+    ProduceResult send(DelayMessage message);
 
-    SendResult sendAsync(DelayMessage message);
+    ProduceResult sendAsync(DelayMessage message);
 
 }

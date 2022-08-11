@@ -1,6 +1,9 @@
 package org.solution.delaymessage.producer;
 
-public enum SendStatus {
+/**
+ * @author huxuewang
+ */
+public enum ProduceStatus {
 
     SEND_SUCCESS,
     PERSISTENCE_FAIL;

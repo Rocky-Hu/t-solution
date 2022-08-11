@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author huxuewang
+ */
 public class DelayMessage implements Serializable {
 
     private String topic;

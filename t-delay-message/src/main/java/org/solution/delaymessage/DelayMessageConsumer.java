@@ -1,5 +1,8 @@
 package org.solution.delaymessage;
 
+/**
+ * @author huxuewang
+ */
 public interface DelayMessageConsumer {
 
     void subscribe(String topic);

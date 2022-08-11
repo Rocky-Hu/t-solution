@@ -2,6 +2,9 @@ package org.solution.delaymessage.storage;
 
 import java.util.List;
 
+/**
+ * @author huxuewang
+ */
 public interface DelayMessageDbStorageService {
 
     DelayMessageEntity get(String id);

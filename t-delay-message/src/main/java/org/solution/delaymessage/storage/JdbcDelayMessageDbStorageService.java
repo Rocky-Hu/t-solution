@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author huxuewang
+ */
 public class JdbcDelayMessageDbStorageService implements DelayMessageDbStorageService {
 
     private static final String DEFAULT_FIELDS = "id, topic, content, status, expire_time, delay, time_unit, tags, " +

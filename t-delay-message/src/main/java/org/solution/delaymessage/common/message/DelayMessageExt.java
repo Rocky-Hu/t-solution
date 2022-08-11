@@ -2,6 +2,9 @@ package org.solution.delaymessage.common.message;
 
 import java.util.Arrays;
 
+/**
+ * @author huxuewang
+ */
 public class DelayMessageExt extends DelayMessage {
 
     private String id;

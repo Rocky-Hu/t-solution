@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author huxuewang
+ */
 public class DelayMessageEntity implements Serializable {
 
     private String id;

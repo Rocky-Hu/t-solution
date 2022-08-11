@@ -3,6 +3,9 @@ package org.solution.delaymessage.common;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * @author huxuewang
+ */
 public class ThreadFactoryImpl implements ThreadFactory {
 
     private final AtomicLong counterReference = new AtomicLong(0);
